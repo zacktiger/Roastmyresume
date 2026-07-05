@@ -313,3 +313,51 @@
   font-size: 11px;
   font-family: var(--font-mono);
 }
+
+/* Mode Switcher Container */
+.modeToggleContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin: 0 auto 50px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  padding: 6px;
+  border-radius: 30px;
+  max-width: fit-content;
+  box-shadow: var(--shadow-lg);
+}
+
+.modeButton {
+  display: flex;
+  align-items: center;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 18px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.modeButton:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.activeModeButton {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: var(--text-primary) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.customRoastContainer {
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto 80px;
+  padding: 0 24px;
+}

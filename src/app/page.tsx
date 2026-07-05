@@ -1,16 +1,18 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import resumeData from '@/data/resume.json';
 import CommitTicker from '@/components/CommitTicker';
 import CommandPalette from '@/components/CommandPalette';
 import BentoGrid from '@/components/BentoGrid';
 import ChatInterface from '@/components/ChatInterface';
-import { Mail, MapPin, Sparkles, Code, Cpu } from 'lucide-react';
+import ResumeUploader from '@/components/ResumeUploader';
+import { Mail, MapPin, Sparkles, Code, Cpu, Flame } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from '@/components/BrandIcons';
 import styles from './page.module.css';
 
 export default function Home() {
+  const [mode, setMode] = useState<'portfolio' | 'custom-roast'>('portfolio');
   // A ref to trigger prompts in the ChatInterface component from the CommandPalette
   const quickAskRef = useRef<((prompt: string) => void) | null>(null);
 
@@ -73,79 +75,103 @@ export default function Home() {
         </p>
       </section>
 
-      {/* 4. Main Two-Column Layout */}
-      <div className={styles.layoutContainer}>
-        {/* Left Column: Bento Grid of Projects & Quick Profile Specs */}
-        <div className={styles.leftColumn}>
-          {/* Profile Spec Card */}
-          <div className={`${styles.profileCard} glass-panel`}>
-            <div className={styles.profileHeader}>
-              <div className={styles.profileAvatar}>
-                <span>{resumeData.personal.name[0]}</span>
+      {/* Mode Switcher */}
+      <div className={styles.modeToggleContainer}>
+        <button 
+          className={`${styles.modeButton} ${mode === 'portfolio' ? styles.activeModeButton : ''}`}
+          onClick={() => setMode('portfolio')}
+        >
+          <Sparkles size={14} style={{ marginRight: '6px' }} />
+          <span>{"Kshitij's AI Portfolio"}</span>
+        </button>
+        <button 
+          className={`${styles.modeButton} ${mode === 'custom-roast' ? styles.activeModeButton : ''}`}
+          onClick={() => setMode('custom-roast')}
+        >
+          <Flame size={14} style={{ marginRight: '6px', color: '#f43f5e' }} />
+          <span>Roast Your Own Resume</span>
+        </button>
+      </div>
+
+      {/* 4. Conditional Content Rendering */}
+      {mode === 'portfolio' ? (
+        <div className={styles.layoutContainer}>
+          {/* Left Column: Bento Grid of Projects & Quick Profile Specs */}
+          <div className={styles.leftColumn}>
+            {/* Profile Spec Card */}
+            <div className={`${styles.profileCard} glass-panel`}>
+              <div className={styles.profileHeader}>
+                <div className={styles.profileAvatar}>
+                  <span>{resumeData.personal.name[0]}</span>
+                </div>
+                <div>
+                  <h3 className={styles.profileName}>{resumeData.personal.name}</h3>
+                  <p className={styles.profileTitle}>{resumeData.personal.title}</p>
+                  <div className={styles.profileLocation}>
+                    <MapPin size={12} />
+                    <span>{resumeData.personal.location}</span>
+                  </div>
+                </div>
               </div>
-              <div>
-                <h3 className={styles.profileName}>{resumeData.personal.name}</h3>
-                <p className={styles.profileTitle}>{resumeData.personal.title}</p>
-                <div className={styles.profileLocation}>
-                  <MapPin size={12} />
-                  <span>{resumeData.personal.location}</span>
+
+              <p className={styles.profileAbout}>{resumeData.personal.about}</p>
+
+              <div className={styles.socialLinks}>
+                <a href={resumeData.personal.github} target="_blank" rel="noopener noreferrer" className={styles.socialLink} title="GitHub">
+                  <GithubIcon size={18} />
+                </a>
+                <a href={resumeData.personal.linkedin} target="_blank" rel="noopener noreferrer" className={styles.socialLink} title="LinkedIn">
+                  <LinkedinIcon size={18} />
+                </a>
+                <a href={`mailto:${resumeData.personal.email}`} className={styles.socialLink} title="Email">
+                  <Mail size={18} />
+                </a>
+              </div>
+            </div>
+
+            {/* Dynamic Bento Grid of Projects */}
+            <BentoGrid projects={resumeData.projects} className={styles.bentoGridOverride} />
+
+            {/* Quick Skills Board */}
+            <div className={styles.skillsContainer}>
+              <div className={`${styles.skillsCard} glass-panel`}>
+                <div className={styles.skillsHeader}>
+                  <Code size={18} className={styles.skillsIcon} />
+                  <h3>Languages</h3>
+                </div>
+                <div className={styles.skillsList}>
+                  {resumeData.skills.languages.map((lang, idx) => (
+                    <span key={idx} className={styles.skillBadge}>{lang}</span>
+                  ))}
+                </div>
+              </div>
+
+              <div className={`${styles.skillsCard} glass-panel`}>
+                <div className={styles.skillsHeader}>
+                  <Cpu size={18} className={styles.skillsIcon} style={{ color: '#a855f7' }} />
+                  <h3>Frameworks</h3>
+                </div>
+                <div className={styles.skillsList}>
+                  {resumeData.skills.frameworks.map((framework, idx) => (
+                    <span key={idx} className={styles.skillBadge} style={{ borderColor: 'rgba(168, 85, 247, 0.2)' }}>{framework}</span>
+                  ))}
                 </div>
               </div>
             </div>
-
-            <p className={styles.profileAbout}>{resumeData.personal.about}</p>
-
-            <div className={styles.socialLinks}>
-              <a href={resumeData.personal.github} target="_blank" rel="noopener noreferrer" className={styles.socialLink} title="GitHub">
-                <GithubIcon size={18} />
-              </a>
-              <a href={resumeData.personal.linkedin} target="_blank" rel="noopener noreferrer" className={styles.socialLink} title="LinkedIn">
-                <LinkedinIcon size={18} />
-              </a>
-              <a href={`mailto:${resumeData.personal.email}`} className={styles.socialLink} title="Email">
-                <Mail size={18} />
-              </a>
-            </div>
           </div>
 
-          {/* Dynamic Bento Grid of Projects */}
-          <BentoGrid projects={resumeData.projects} className={styles.bentoGridOverride} />
-
-          {/* Quick Skills Board */}
-          <div className={styles.skillsContainer}>
-            <div className={`${styles.skillsCard} glass-panel`}>
-              <div className={styles.skillsHeader}>
-                <Code size={18} className={styles.skillsIcon} />
-                <h3>Languages</h3>
-              </div>
-              <div className={styles.skillsList}>
-                {resumeData.skills.languages.map((lang, idx) => (
-                  <span key={idx} className={styles.skillBadge}>{lang}</span>
-                ))}
-              </div>
-            </div>
-
-            <div className={`${styles.skillsCard} glass-panel`}>
-              <div className={styles.skillsHeader}>
-                <Cpu size={18} className={styles.skillsIcon} style={{ color: '#a855f7' }} />
-                <h3>Frameworks</h3>
-              </div>
-              <div className={styles.skillsList}>
-                {resumeData.skills.frameworks.map((framework, idx) => (
-                  <span key={idx} className={styles.skillBadge} style={{ borderColor: 'rgba(168, 85, 247, 0.2)' }}>{framework}</span>
-                ))}
-              </div>
+          {/* Right Column: Sticky Chat Interface */}
+          <div id="chat-section" className={styles.rightColumn}>
+            <div className={styles.stickyChat}>
+              <ChatInterface onQuickAskRef={quickAskRef} />
             </div>
           </div>
         </div>
-
-        {/* Right Column: Sticky Chat Interface */}
-        <div id="chat-section" className={styles.rightColumn}>
-          <div className={styles.stickyChat}>
-            <ChatInterface onQuickAskRef={quickAskRef} />
-          </div>
+      ) : (
+        <div className={styles.customRoastContainer}>
+          <ResumeUploader />
         </div>
-      </div>
+      )}
 
       {/* Footer */}
       <footer className={styles.pageFooter}>
