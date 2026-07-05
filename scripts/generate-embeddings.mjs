@@ -8,7 +8,7 @@ const __dirname = path.dirname(__filename);
 
 const RESUME_PATH = path.join(__dirname, '../src/data/resume.json');
 const CACHE_PATH = path.join(__dirname, '../src/data/embeddings-cache.json');
-const EMBEDDING_MODEL = 'text-embedding-004';
+const EMBEDDING_MODEL = 'gemini-embedding-2';
 
 // Simple check for GEMINI_API_KEY
 const apiKey = process.env.GEMINI_API_KEY;

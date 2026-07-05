@@ -41,3 +41,5 @@ yarn-error.log*
 next-env.d.ts
 
 /reviews 
+/AGENTS.md
+/.agents/skills/agent-rules/SKILL.md
