@@ -1,66 +1,160 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client';
+
+import React, { useRef } from 'react';
+import resumeData from '@/data/resume.json';
+import CommitTicker from '@/components/CommitTicker';
+import CommandPalette from '@/components/CommandPalette';
+import BentoGrid from '@/components/BentoGrid';
+import ChatInterface from '@/components/ChatInterface';
+import { Mail, MapPin, Sparkles, Code, Cpu } from 'lucide-react';
+import { GithubIcon, LinkedinIcon } from '@/components/BrandIcons';
+import styles from './page.module.css';
 
 export default function Home() {
+  // A ref to trigger prompts in the ChatInterface component from the CommandPalette
+  const quickAskRef = useRef<((prompt: string) => void) | null>(null);
+
+  const handleSelectProject = (id: string) => {
+    const element = document.getElementById(`project-${id}`);
+    if (element) {
+      // Scroll to the card
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Trigger card click to open details modal
+      setTimeout(() => {
+        element.click();
+      }, 500);
+    }
+  };
+
+  const handleQuickAsk = (prompt: string) => {
+    if (quickAskRef.current) {
+      quickAskRef.current(prompt);
+      // Scroll to chat section
+      const chatSection = document.getElementById('chat-section');
+      if (chatSection) {
+        chatSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  };
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className={styles.main}>
+      {/* 1. Infinite Commit Ticker */}
+      <CommitTicker />
+
+      {/* 2. Page Navigation / Command Palette bar */}
+      <header className={styles.header}>
+        <div className={styles.headerLimit}>
+          <div className={styles.logoGroup}>
+            <div className={styles.logoDot} />
+            <h1 className={styles.logoText}>Ask My Resume</h1>
+          </div>
+          <CommandPalette 
+            onSelectProject={handleSelectProject} 
+            onQuickAsk={handleQuickAsk}
+            resumeData={resumeData}
+          />
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </header>
+
+      {/* 3. Hero Section */}
+      <section className={styles.heroSection}>
+        <div className={styles.heroGlow} />
+        <span className={styles.introBadge}>
+          <Sparkles size={12} style={{ marginRight: '6px' }} />
+          Interact with Kshitij's Background
+        </span>
+        <h2 className={styles.heroTitle}>
+          Don't just skim a PDF. <br />
+          <span className={styles.gradientText}>Roast and query my career history.</span>
+        </h2>
+        <p className={styles.heroSubtitle}>
+          An AI-grounded portfolio built with Next.js, Framer Motion, and Gemini. Use the interactive agent to test qualifications or click builds to inspect key technical metrics.
+        </p>
+      </section>
+
+      {/* 4. Main Two-Column Layout */}
+      <div className={styles.layoutContainer}>
+        {/* Left Column: Bento Grid of Projects & Quick Profile Specs */}
+        <div className={styles.leftColumn}>
+          {/* Profile Spec Card */}
+          <div className={`${styles.profileCard} glass-panel`}>
+            <div className={styles.profileHeader}>
+              <div className={styles.profileAvatar}>
+                <span>{resumeData.personal.name[0]}</span>
+              </div>
+              <div>
+                <h3 className={styles.profileName}>{resumeData.personal.name}</h3>
+                <p className={styles.profileTitle}>{resumeData.personal.title}</p>
+                <div className={styles.profileLocation}>
+                  <MapPin size={12} />
+                  <span>{resumeData.personal.location}</span>
+                </div>
+              </div>
+            </div>
+
+            <p className={styles.profileAbout}>{resumeData.personal.about}</p>
+
+            <div className={styles.socialLinks}>
+              <a href={resumeData.personal.github} target="_blank" rel="noopener noreferrer" className={styles.socialLink} title="GitHub">
+                <GithubIcon size={18} />
+              </a>
+              <a href={resumeData.personal.linkedin} target="_blank" rel="noopener noreferrer" className={styles.socialLink} title="LinkedIn">
+                <LinkedinIcon size={18} />
+              </a>
+              <a href={`mailto:${resumeData.personal.email}`} className={styles.socialLink} title="Email">
+                <Mail size={18} />
+              </a>
+            </div>
+          </div>
+
+          {/* Dynamic Bento Grid of Projects */}
+          <div className={styles.bentoSection}>
+            <BentoGrid projects={resumeData.projects} />
+          </div>
+
+          {/* Quick Skills Board */}
+          <div className={styles.skillsContainer}>
+            <div className={`${styles.skillsCard} glass-panel`}>
+              <div className={styles.skillsHeader}>
+                <Code size={18} className={styles.skillsIcon} />
+                <h3>Languages</h3>
+              </div>
+              <div className={styles.skillsList}>
+                {resumeData.skills.languages.map((lang, idx) => (
+                  <span key={idx} className={styles.skillBadge}>{lang}</span>
+                ))}
+              </div>
+            </div>
+
+            <div className={`${styles.skillsCard} glass-panel`}>
+              <div className={styles.skillsHeader}>
+                <Cpu size={18} className={styles.skillsIcon} style={{ color: '#a855f7' }} />
+                <h3>Frameworks</h3>
+              </div>
+              <div className={styles.skillsList}>
+                {resumeData.skills.frameworks.map((framework, idx) => (
+                  <span key={idx} className={styles.skillBadge} style={{ borderColor: 'rgba(168, 85, 247, 0.2)' }}>{framework}</span>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
-      </main>
-    </div>
+
+        {/* Right Column: Sticky Chat Interface */}
+        <div id="chat-section" className={styles.rightColumn}>
+          <div className={styles.stickyChat}>
+            <ChatInterface onQuickAskRef={quickAskRef} />
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <footer className={styles.pageFooter}>
+        <div className={styles.footerLimit}>
+          <p>© {new Date().getFullYear()} Kshitij. Built with extreme restraint and reliable guardrails.</p>
+        </div>
+      </footer>
+    </main>
   );
 }

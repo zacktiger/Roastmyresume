@@ -1,142 +1,318 @@
-.page {
-  --background: #fafafa;
-  --foreground: #fff;
-
-  --text-primary: #000;
-  --text-secondary: #666;
-
-  --button-primary-hover: #383838;
-  --button-secondary-hover: #f2f2f2;
-  --button-secondary-border: #ebebeb;
-
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-geist-sans);
-  background-color: var(--background);
-}
-
 .main {
+  min-height: 100vh;
   display: flex;
-  flex: 1;
-  width: 100%;
-  max-width: 800px;
   flex-direction: column;
-  align-items: flex-start;
+  position: relative;
+}
+
+/* Header */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 500;
+  width: 100%;
+  background: rgba(7, 8, 10, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-color);
+  padding: 12px 0;
+}
+
+.headerLimit {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
   justify-content: space-between;
-  background-color: var(--foreground);
-  padding: 120px 60px;
-}
-
-.intro {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  gap: 24px;
-}
-
-.intro h1 {
-  max-width: 320px;
-  font-size: 40px;
-  font-weight: 600;
-  line-height: 48px;
-  letter-spacing: -2.4px;
-  text-wrap: balance;
-  color: var(--text-primary);
-}
-
-.intro p {
-  max-width: 440px;
-  font-size: 18px;
-  line-height: 32px;
-  text-wrap: balance;
-  color: var(--text-secondary);
-}
-
-.intro a {
-  font-weight: 500;
-  color: var(--text-primary);
-}
-
-.ctas {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  max-width: 440px;
-  gap: 16px;
-  font-size: 14px;
-}
-
-.ctas a {
-  display: flex;
-  justify-content: center;
   align-items: center;
-  height: 40px;
-  padding: 0 16px;
-  border-radius: 128px;
-  border: 1px solid transparent;
-  transition: 0.2s;
-  cursor: pointer;
-  width: fit-content;
-  font-weight: 500;
 }
 
-a.primary {
-  background: var(--text-primary);
-  color: var(--background);
+.logoGroup {
+  display: flex;
+  align-items: center;
   gap: 8px;
 }
 
-a.secondary {
-  border-color: var(--button-secondary-border);
+.logoDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary);
+  box-shadow: 0 0 10px var(--primary);
 }
 
-/* Enable hover only on non-touch devices */
-@media (hover: hover) and (pointer: fine) {
-  a.primary:hover {
-    background: var(--button-primary-hover);
-    border-color: transparent;
+.logoText {
+  font-size: 15px;
+  font-weight: 700;
+  font-family: var(--font-sans);
+  letter-spacing: -0.01em;
+}
+
+/* Hero Section */
+.heroSection {
+  text-align: center;
+  padding: 80px 24px 40px;
+  max-width: 800px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.heroGlow {
+  position: absolute;
+  top: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.introBadge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  padding: 5px 12px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+
+.heroTitle {
+  font-size: 42px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  margin-bottom: 18px;
+  background: linear-gradient(180deg, #ffffff 40%, rgba(255, 255, 255, 0.6) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradientText {
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.heroSubtitle {
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Two Column Layout */
+.layoutContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+}
+
+.leftColumn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.rightColumn {
+  width: 100%;
+}
+
+@media (min-width: 992px) {
+  .layoutContainer {
+    flex-direction: row;
+    align-items: flex-start;
   }
 
-  a.secondary:hover {
-    background: var(--button-secondary-hover);
-    border-color: transparent;
+  .leftColumn {
+    width: 60%;
+  }
+
+  .rightColumn {
+    width: 40%;
+    position: sticky;
+    top: 88px;
   }
 }
 
-@media (max-width: 600px) {
-  .main {
-    padding: 48px 24px;
-  }
+/* Profile Card */
+.profileCard {
+  padding: 30px;
+}
 
-  .intro {
-    gap: 16px;
-  }
+.profileHeader {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
 
-  .intro h1 {
-    font-size: 32px;
-    line-height: 40px;
-    letter-spacing: -1.92px;
+.profileAvatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--primary-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+
+.profileName {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.profileTitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+}
+
+.profileLocation {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.profileAbout {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+.socialLinks {
+  display: flex;
+  gap: 12px;
+}
+
+.socialLink {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.socialLink:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--border-hover);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+}
+
+/* Bento grid section spacing reset */
+.bentoSection {
+  margin: -40px 0;
+}
+
+.bentoSection :global(.BentoGrid_sectionContainer__tG_u9) {
+  padding: 0;
+  margin: 40px auto;
+}
+
+/* Skills Cards */
+.skillsContainer {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+@media (min-width: 576px) {
+  .skillsContainer {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  .logo {
-    filter: invert();
-  }
+.skillsCard {
+  padding: 24px;
+}
 
-  .page {
-    --background: #000;
-    --foreground: #000;
+.skillsHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
 
-    --text-primary: #ededed;
-    --text-secondary: #999;
+.skillsHeader h3 {
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-primary);
+}
 
-    --button-primary-hover: #ccc;
-    --button-secondary-hover: #1a1a1a;
-    --button-secondary-border: #1a1a1a;
-  }
+.skillsIcon {
+  color: var(--primary);
+}
+
+.skillsList {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.skillBadge {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  padding: 4px 10px;
+  border-radius: 6px;
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.skillBadge:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
+}
+
+/* Sticky Chat Container wrapper */
+.stickyChat {
+  width: 100%;
+}
+
+/* Page Footer */
+.pageFooter {
+  width: 100%;
+  border-top: 1px solid var(--border-color);
+  background: rgba(5, 6, 8, 0.5);
+  padding: 30px 0;
+  margin-top: auto;
+}
+
+.footerLimit {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-family: var(--font-mono);
 }
