@@ -41,6 +41,7 @@ ${contextText}
 
     // Map message history into Gemini's Content format
     // Roles: 'user' and 'model'
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const contents: any[] = [];
 
     // Add previous conversation context. We skip the very last message if it's the user's current query,
@@ -102,9 +103,10 @@ ${contextText}
         'Connection': 'keep-alive',
       },
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Chat API Error:', error);
-    return new Response(JSON.stringify({ error: error.message || 'Internal Server Error' }), {
+    const message = error instanceof Error ? error.message : 'Internal Server Error';
+    return new Response(JSON.stringify({ error: message }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });

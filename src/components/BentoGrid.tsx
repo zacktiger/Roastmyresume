@@ -8,7 +8,6 @@ import {
   Flame, 
   Languages, 
   ExternalLink, 
-  Layers, 
   X,
   Code
 } from 'lucide-react';

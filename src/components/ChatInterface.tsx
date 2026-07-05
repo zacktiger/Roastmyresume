@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Sparkles, User, Bot, RefreshCw, Flame } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Send, User, Bot, RefreshCw, Flame } from 'lucide-react';
 import styles from './ChatInterface.module.css';
 
 interface Message {
@@ -60,19 +59,6 @@ export default function ChatInterface({ onQuickAskRef }: ChatInterfaceProps) {
 
   useEffect(() => {
     scrollChat();
-  }, [messages, isStreaming]);
-
-  // Expose the quick-ask function to parent components (like Command Palette)
-  const triggerQuickAsk = async (prompt: string) => {
-    if (isStreaming) return;
-    await sendMessage(prompt);
-  };
-
-  useEffect(() => {
-    onQuickAskRef.current = triggerQuickAsk;
-    return () => {
-      onQuickAskRef.current = null;
-    };
   }, [messages, isStreaming]);
 
   const sendMessage = async (textToSend: string) => {
@@ -142,7 +128,7 @@ export default function ChatInterface({ onQuickAskRef }: ChatInterfaceProps) {
                   } else if (parsed.error) {
                     accumulatedResponse += `\n*[Error: ${parsed.error}]*`;
                   }
-                } catch (e) {
+                } catch {
                   // Ignore parsing errors for partial/incomplete SSE chunks
                 }
               }
@@ -150,7 +136,7 @@ export default function ChatInterface({ onQuickAskRef }: ChatInterfaceProps) {
           }
         }
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Chat error:', error);
       setMessages((prev) => 
         prev.map((msg) => 
@@ -163,6 +149,20 @@ export default function ChatInterface({ onQuickAskRef }: ChatInterfaceProps) {
       setIsStreaming(false);
     }
   };
+
+  // Expose the quick-ask function to parent components (like Command Palette)
+  const triggerQuickAsk = async (prompt: string) => {
+    if (isStreaming) return;
+    await sendMessage(prompt);
+  };
+
+  useEffect(() => {
+    onQuickAskRef.current = triggerQuickAsk;
+    return () => {
+      onQuickAskRef.current = null;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages, isStreaming]);
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();

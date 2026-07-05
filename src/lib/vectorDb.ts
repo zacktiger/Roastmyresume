@@ -15,6 +15,31 @@ export interface EmbeddedChunk extends ResumeChunk {
 const RESUME_PATH = path.join(process.cwd(), 'src/data/resume.json');
 const CACHE_PATH = path.join(process.cwd(), 'src/data/embeddings-cache.json');
 
+interface ExperienceItem {
+  company: string;
+  role: string;
+  period: string;
+  description: string;
+  bullets: string[];
+}
+
+interface ProjectItem {
+  id: string;
+  name: string;
+  tagline: string;
+  description: string;
+  bullets: string[];
+  techStack: string[];
+  link: string;
+}
+
+interface EducationItem {
+  institution: string;
+  degree: string;
+  period: string;
+  details: string;
+}
+
 // Helper to generate chunks from the resume JSON
 export function generateChunks(): ResumeChunk[] {
   if (!fs.existsSync(RESUME_PATH)) {
@@ -33,7 +58,7 @@ export function generateChunks(): ResumeChunk[] {
   });
 
   // 2. Experience
-  resume.experience.forEach((exp: any, expIdx: number) => {
+  resume.experience.forEach((exp: ExperienceItem) => {
     const expId = `exp_${exp.company.toLowerCase().replace(/\s+/g, '_')}`;
     
     // Summary chunk
@@ -54,7 +79,7 @@ export function generateChunks(): ResumeChunk[] {
   });
 
   // 3. Projects
-  resume.projects.forEach((proj: any) => {
+  resume.projects.forEach((proj: ProjectItem) => {
     const projId = `proj_${proj.id}`;
 
     // Summary chunk
@@ -92,7 +117,7 @@ export function generateChunks(): ResumeChunk[] {
   });
 
   // 5. Education
-  resume.education.forEach((edu: any, eduIdx: number) => {
+  resume.education.forEach((edu: EducationItem, eduIdx: number) => {
     chunks.push({
       id: `education_${eduIdx}`,
       text: `Education at ${edu.institution}: Degree: ${edu.degree} (${edu.period}). Details: ${edu.details}`,

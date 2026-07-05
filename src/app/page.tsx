@@ -62,10 +62,10 @@ export default function Home() {
         <div className={styles.heroGlow} />
         <span className={styles.introBadge}>
           <Sparkles size={12} style={{ marginRight: '6px' }} />
-          Interact with Kshitij's Background
+          {"Interact with Kshitij's Background"}
         </span>
         <h2 className={styles.heroTitle}>
-          Don't just skim a PDF. <br />
+          {"Don't just skim a PDF."} <br />
           <span className={styles.gradientText}>Roast and query my career history.</span>
         </h2>
         <p className={styles.heroSubtitle}>

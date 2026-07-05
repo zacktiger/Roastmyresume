@@ -7,7 +7,6 @@ import {
   Terminal, 
   Flame, 
   Languages, 
-  Smile, 
   Sparkles, 
   Mail, 
   Search
@@ -15,10 +14,18 @@ import {
 import { GithubIcon, LinkedinIcon } from './BrandIcons';
 import styles from './CommandPalette.module.css';
 
+interface ResumePersonal {
+  github: string;
+  linkedin: string;
+  email: string;
+}
+
 interface CommandPaletteProps {
   onSelectProject: (id: string) => void;
   onQuickAsk: (prompt: string) => void;
-  resumeData: any;
+  resumeData: {
+    personal: ResumePersonal;
+  };
 }
 
 export default function CommandPalette({ 
@@ -132,7 +139,7 @@ export default function CommandPalette({
                 className={styles.item}
               >
                 <Briefcase size={16} className={styles.itemIcon} style={{ color: '#60a5fa' }} />
-                <span className={styles.itemName}>What is Kshitij\'s tech stack?</span>
+                <span className={styles.itemName}>{"What is Kshitij's tech stack?"}</span>
                 <span className={styles.itemShortcut}>AI query</span>
               </Command.Item>
 

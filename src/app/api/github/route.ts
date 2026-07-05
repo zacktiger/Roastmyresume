@@ -34,6 +34,7 @@ export async function GET() {
     const events = await response.json();
     
     // Find the latest PushEvent
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const pushEvent = events.find((e: any) => e.type === 'PushEvent');
     
     if (pushEvent && pushEvent.payload && pushEvent.payload.commits && pushEvent.payload.commits.length > 0) {
