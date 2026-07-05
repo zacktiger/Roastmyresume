@@ -7,12 +7,13 @@ import CommandPalette from '@/components/CommandPalette';
 import BentoGrid from '@/components/BentoGrid';
 import ChatInterface from '@/components/ChatInterface';
 import ResumeUploader from '@/components/ResumeUploader';
-import { Mail, MapPin, Sparkles, Code, Cpu, Flame } from 'lucide-react';
+import ResumeSandbox from '@/components/ResumeSandbox';
+import { Mail, MapPin, Sparkles, Code, Cpu, Flame, Edit3 } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from '@/components/BrandIcons';
 import styles from './page.module.css';
 
 export default function Home() {
-  const [mode, setMode] = useState<'portfolio' | 'custom-roast'>('portfolio');
+  const [mode, setMode] = useState<'portfolio' | 'custom-roast' | 'sandbox'>('portfolio');
   // A ref to trigger prompts in the ChatInterface component from the CommandPalette
   const quickAskRef = useRef<((prompt: string) => void) | null>(null);
 
@@ -89,12 +90,19 @@ export default function Home() {
           onClick={() => setMode('custom-roast')}
         >
           <Flame size={14} style={{ marginRight: '6px', color: '#f43f5e' }} />
-          <span>Roast Your Own Resume</span>
+          <span>Roast Your Own</span>
+        </button>
+        <button 
+          className={`${styles.modeButton} ${mode === 'sandbox' ? styles.activeModeButton : ''}`}
+          onClick={() => setMode('sandbox')}
+        >
+          <Edit3 size={14} style={{ marginRight: '6px', color: '#6366f1' }} />
+          <span>Roast Sandbox</span>
         </button>
       </div>
 
       {/* 4. Conditional Content Rendering */}
-      {mode === 'portfolio' ? (
+      {mode === 'portfolio' && (
         <div className={styles.layoutContainer}>
           {/* Left Column: Bento Grid of Projects & Quick Profile Specs */}
           <div className={styles.leftColumn}>
@@ -167,9 +175,17 @@ export default function Home() {
             </div>
           </div>
         </div>
-      ) : (
+      )}
+
+      {mode === 'custom-roast' && (
         <div className={styles.customRoastContainer}>
           <ResumeUploader />
+        </div>
+      )}
+
+      {mode === 'sandbox' && (
+        <div className={styles.customRoastContainer}>
+          <ResumeSandbox />
         </div>
       )}
 
