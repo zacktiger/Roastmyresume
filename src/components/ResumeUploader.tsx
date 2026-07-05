@@ -8,6 +8,7 @@ import styles from './ResumeUploader.module.css';
 // Simple markdown formatter helper for roast output
 function formatRoastContent(text: string): string {
   let escaped = text
+    .replace(/\r/g, '')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');

@@ -18,6 +18,7 @@ interface ChatInterfaceProps {
 function formatMessageContent(text: string): string {
   // Escape HTML tags to prevent XSS
   let escaped = text
+    .replace(/\r/g, '')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
