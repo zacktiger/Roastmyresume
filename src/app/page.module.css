@@ -132,7 +132,7 @@
 @media (min-width: 992px) {
   .layoutContainer {
     flex-direction: row;
-    align-items: flex-start;
+    align-items: stretch;
   }
 
   .leftColumn {
@@ -143,8 +143,6 @@
   .rightColumn {
     flex: 2;
     width: auto;
-    position: sticky;
-    top: 88px;
   }
 }
 
@@ -295,6 +293,8 @@
 /* Sticky Chat Container wrapper */
 .stickyChat {
   width: 100%;
+  position: sticky;
+  top: 88px;
 }
 
 /* Page Footer */
