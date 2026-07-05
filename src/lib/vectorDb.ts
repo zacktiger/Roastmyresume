@@ -179,7 +179,7 @@ export async function initVectorDb(): Promise<EmbeddedChunk[]> {
         // Fallback to empty embedding for now, to let it boot
         embeddedChunks.push({
           ...chunk,
-          embedding: new Array(768).fill(0)
+          embedding: new Array(3072).fill(0)
         });
         continue;
       }
@@ -205,7 +205,7 @@ export async function initVectorDb(): Promise<EmbeddedChunk[]> {
         console.error(`Failed to generate embedding for ${chunk.id}:`, err);
         embeddedChunks.push({
           ...chunk,
-          embedding: new Array(768).fill(0)
+          embedding: new Array(3072).fill(0)
         });
       }
     }

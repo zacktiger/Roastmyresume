@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, User, Bot, RefreshCw, Flame } from 'lucide-react';
 import styles from './ChatInterface.module.css';
+import { parseMarkdown } from '@/lib/markdown';
 
 interface Message {
   id: string;
@@ -16,29 +17,7 @@ interface ChatInterfaceProps {
 
 // Simple markdown-to-HTML parser for basic formatting (**bold**, code, lists, linebreaks)
 function formatMessageContent(text: string): string {
-  // Escape HTML tags to prevent XSS
-  let escaped = text
-    .replace(/\r/g, '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-
-  // Bold formatting: **text** -> <strong>text</strong>
-  escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
-  // Bullet items: * item -> <li>item</li>
-  escaped = escaped.replace(/^\*\s+(.*?)$/gm, '<li>$1</li>');
-  
-  // Wrap consecutive lists in <ul> tags
-  escaped = escaped.replace(/(<li>.*?<\/li>)+/g, '<ul>$&</ul>');
-
-  // Inline Code: `code` -> <code>code</code>
-  escaped = escaped.replace(/`(.*?)`/g, '<code>$1</code>');
-
-  // Paragraph returns
-  escaped = escaped.replace(/\n/g, '<br />');
-
-  return escaped;
+  return parseMarkdown(text);
 }
 
 export default function ChatInterface({ onQuickAskRef }: ChatInterfaceProps) {

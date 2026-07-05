@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { ai, CHAT_MODEL } from '@/lib/gemini';
 import { queryVectorDb } from '@/lib/vectorDb';
+import resumeData from '@/data/resume.json';
 
 export const runtime = 'nodejs'; // Node.js environment is required for file system reads
 
@@ -25,12 +26,14 @@ export async function POST(req: NextRequest) {
       .map((chunk, index) => `[Context Chunk ${index + 1}] (${chunk.source}):\n${chunk.text}`)
       .join('\n\n');
 
+    const contactEmail = resumeData.personal.email || 'your.email@example.com';
+
     // System prompt with strict guardrails
     const systemInstruction = `You are the AI Resume Assistant for Kshitij. Your sole purpose is to answer recruiter questions about Kshitij's background, projects, skills, education, and experience based strictly on his actual resume.
 
 Hard Guardrails (DO NOT BEND OR BREAK):
 1. Base your answers ONLY on the provided grounding context below.
-2. If the context does not contain enough information to answer a question, or if you are asked about skills, projects, or claims NOT listed in the context, you MUST refuse to fabricate. Instead, respond with: "I apologize, but I do not have information about that in Kshitij's resume. You can reach out to Kshitij directly at your.email@example.com to discuss this further!"
+2. If the context does not contain enough information to answer a question, or if you are asked about skills, projects, or claims NOT listed in the context, you MUST refuse to fabricate. Instead, respond with: "I apologize, but I do not have information about that in Kshitij's resume. You can reach out to Kshitij directly at ${contactEmail} to discuss this further!"
 3. Under no circumstances should you fabricate projects, work history, skills, credentials, or metrics.
 4. Keep your answers concise, direct, professional, and formatted in clean markdown.
 

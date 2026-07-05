@@ -4,32 +4,11 @@ import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UploadCloud, FileText, Flame, RotateCcw, AlertTriangle } from 'lucide-react';
 import styles from './ResumeUploader.module.css';
+import { parseMarkdown } from '@/lib/markdown';
 
 // Simple markdown formatter helper for roast output
 function formatRoastContent(text: string): string {
-  let escaped = text
-    .replace(/\r/g, '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-
-  // Format Headings: ## Title -> <h4>Title</h4>
-  escaped = escaped.replace(/^##\s+(.*?)$/gm, '<h4 class="roast-heading">$1</h4>');
-
-  // Format Bold: **text** -> <strong>text</strong>
-  escaped = escaped.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
-  // Format List Items: - text -> <li class="roast-li">$1</li>
-  escaped = escaped.replace(/^-\s+(.*?)$/gm, '<li>$1</li>');
-  escaped = escaped.replace(/(<li>.*?<\/li>)+/g, '<ul class="roast-list">$&</ul>');
-
-  // Format inline code: `code` -> <code>code</code>
-  escaped = escaped.replace(/`(.*?)`/g, '<code>$1</code>');
-
-  // Line breaks
-  escaped = escaped.replace(/\n/g, '<br />');
-
-  return escaped;
+  return parseMarkdown(text);
 }
 
 export default function ResumeUploader() {
