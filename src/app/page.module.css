@@ -226,13 +226,10 @@
 }
 
 /* Bento grid section spacing reset */
-.bentoSection {
-  margin: -40px 0;
-}
-
-.bentoSection :global(.BentoGrid_sectionContainer__tG_u9) {
+.bentoGridOverride {
   padding: 0;
   margin: 40px auto;
+  max-width: 100%;
 }
 
 /* Skills Cards */

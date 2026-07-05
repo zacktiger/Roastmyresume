@@ -25,9 +25,10 @@ interface Project {
 
 interface BentoGridProps {
   projects: Project[];
+  className?: string;
 }
 
-export default function BentoGrid({ projects }: BentoGridProps) {
+export default function BentoGrid({ projects, className }: BentoGridProps) {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   // Helper to get matching icons and gradient colors for each build
@@ -87,7 +88,7 @@ export default function BentoGrid({ projects }: BentoGridProps) {
   };
 
   return (
-    <div className={styles.sectionContainer}>
+    <div className={`${styles.sectionContainer} ${className || ''}`}>
       <div className={styles.sectionHeader}>
         <span className={styles.badge}>Builds & Projects</span>
         <h2 className={styles.title}>The Bento Grid of Engineering</h2>

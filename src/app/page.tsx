@@ -109,9 +109,7 @@ export default function Home() {
           </div>
 
           {/* Dynamic Bento Grid of Projects */}
-          <div className={styles.bentoSection}>
-            <BentoGrid projects={resumeData.projects} />
-          </div>
+          <BentoGrid projects={resumeData.projects} className={styles.bentoGridOverride} />
 
           {/* Quick Skills Board */}
           <div className={styles.skillsContainer}>
