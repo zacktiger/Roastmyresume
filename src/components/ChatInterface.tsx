@@ -102,13 +102,17 @@ export default function ChatInterface({ onQuickAskRef }: ChatInterfaceProps) {
       const decoder = new TextDecoder();
       let done = false;
       let accumulatedResponse = '';
+      let buffer = '';
 
       while (!done) {
         const { value, done: doneReading } = await reader.read();
         done = doneReading;
         if (value) {
-          const chunk = decoder.decode(value);
-          const lines = chunk.split('\n');
+          buffer += decoder.decode(value, { stream: !done });
+          const lines = buffer.split('\n');
+          
+          // The last element might be incomplete; save it back to buffer
+          buffer = lines.pop() || '';
           
           for (const line of lines) {
             if (line.startsWith('data: ')) {
@@ -133,6 +137,28 @@ export default function ChatInterface({ onQuickAskRef }: ChatInterfaceProps) {
                 }
               }
             }
+          }
+        }
+      }
+
+      // Process any residual data left in buffer at stream completion
+      if (buffer && buffer.startsWith('data: ')) {
+        const dataStr = buffer.slice(6).trim();
+        if (dataStr) {
+          try {
+            const parsed = JSON.parse(dataStr);
+            if (parsed.text) {
+              accumulatedResponse += parsed.text;
+              setMessages((prev) => 
+                prev.map((msg) => 
+                  msg.id === assistantMessageId 
+                    ? { ...msg, content: accumulatedResponse } 
+                    : msg
+                )
+              );
+            }
+          } catch {
+            // Ignore parse errors
           }
         }
       }

@@ -189,10 +189,9 @@ export default function Home() {
         </div>
       )}
 
-      {/* Footer */}
       <footer className={styles.pageFooter}>
         <div className={styles.footerLimit}>
-          <p>© {new Date().getFullYear()} Kshitij. Built with extreme restraint and reliable guardrails.</p>
+          <p>© 2026 Kshitij. Built with extreme restraint and reliable guardrails.</p>
         </div>
       </footer>
     </main>

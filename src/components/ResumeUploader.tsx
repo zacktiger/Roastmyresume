@@ -144,13 +144,17 @@ export default function ResumeUploader() {
       const decoder = new TextDecoder();
       let done = false;
       let accumulatedRoast = '';
+      let buffer = '';
 
       while (!done) {
         const { value, done: doneReading } = await reader.read();
         done = doneReading;
         if (value) {
-          const chunk = decoder.decode(value);
-          const lines = chunk.split('\n');
+          buffer += decoder.decode(value, { stream: !done });
+          const lines = buffer.split('\n');
+          
+          // Save the last potentially incomplete line back to the buffer
+          buffer = lines.pop() || '';
           
           for (const line of lines) {
             if (line.startsWith('data: ')) {
@@ -171,6 +175,23 @@ export default function ResumeUploader() {
                 }
               }
             }
+          }
+        }
+      }
+
+      // Process residual data left in buffer at completion
+      if (buffer && buffer.startsWith('data: ')) {
+        const dataStr = buffer.slice(6).trim();
+        if (dataStr) {
+          try {
+            const parsed = JSON.parse(dataStr);
+            if (parsed.text) {
+              accumulatedRoast += parsed.text;
+              setRoast(accumulatedRoast);
+              terminalEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+            }
+          } catch {
+            // Ignore parse errors
           }
         }
       }
