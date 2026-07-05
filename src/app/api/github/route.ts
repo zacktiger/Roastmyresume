@@ -1,21 +1,13 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
+import resumeData from '@/data/resume.json';
 
 export async function GET() {
   try {
-    // Read github username from resume.json
-    const resumePath = path.join(process.cwd(), 'src/data/resume.json');
     let username = 'kshitij-github-placeholder';
     
-    if (fs.existsSync(resumePath)) {
-      const rawData = fs.readFileSync(resumePath, 'utf8');
-      const resume = JSON.parse(rawData);
-      // Extract username from github URL
-      const githubUrl = resume.personal.github;
-      if (githubUrl && githubUrl.includes('github.com/')) {
-        username = githubUrl.split('github.com/')[1].split('/')[0];
-      }
+    const githubUrl = resumeData.personal.github;
+    if (githubUrl && githubUrl.includes('github.com/')) {
+      username = githubUrl.split('github.com/')[1].split('/')[0];
     }
 
     // Attempt to fetch public events from GitHub API

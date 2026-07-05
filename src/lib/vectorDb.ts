@@ -1,6 +1,6 @@
-import fs from 'fs';
-import path from 'path';
 import { ai, EMBEDDING_MODEL } from './gemini';
+import resumeData from '@/data/resume.json';
+import cachedEmbeddings from '@/data/embeddings-cache.json';
 
 export interface ResumeChunk {
   id: string;
@@ -11,9 +11,6 @@ export interface ResumeChunk {
 export interface EmbeddedChunk extends ResumeChunk {
   embedding: number[];
 }
-
-const RESUME_PATH = path.join(process.cwd(), 'src/data/resume.json');
-const CACHE_PATH = path.join(process.cwd(), 'src/data/embeddings-cache.json');
 
 interface ExperienceItem {
   company: string;
@@ -40,15 +37,30 @@ interface EducationItem {
   details: string;
 }
 
+interface ResumeData {
+  personal: {
+    name: string;
+    title: string;
+    email: string;
+    github: string;
+    linkedin: string;
+    location: string;
+    about: string;
+  };
+  experience: ExperienceItem[];
+  projects: ProjectItem[];
+  skills: {
+    languages: string[];
+    frameworks: string[];
+    tools: string[];
+  };
+  education: EducationItem[];
+}
+
 // Helper to generate chunks from the resume JSON
 export function generateChunks(): ResumeChunk[] {
-  if (!fs.existsSync(RESUME_PATH)) {
-    throw new Error(`Resume data file not found at ${RESUME_PATH}`);
-  }
-
-  const rawData = fs.readFileSync(RESUME_PATH, 'utf8');
-  const resume = JSON.parse(rawData);
   const chunks: ResumeChunk[] = [];
+  const resume = resumeData as unknown as ResumeData;
 
   // 1. Personal / About
   chunks.push({
@@ -151,18 +163,8 @@ export async function initVectorDb(): Promise<EmbeddedChunk[]> {
   if (dbCache) return dbCache;
 
   const chunks = generateChunks();
-  let cache: Record<string, number[]> = {};
-
-  if (fs.existsSync(CACHE_PATH)) {
-    try {
-      cache = JSON.parse(fs.readFileSync(CACHE_PATH, 'utf8'));
-    } catch (e) {
-      console.error('Failed to parse embeddings cache, recreating...', e);
-    }
-  }
-
+  const cache: Record<string, number[]> = cachedEmbeddings as unknown as Record<string, number[]>;
   const embeddedChunks: EmbeddedChunk[] = [];
-  let updatedCache = false;
 
   for (const chunk of chunks) {
     if (cache[chunk.text]) {
@@ -196,7 +198,6 @@ export async function initVectorDb(): Promise<EmbeddedChunk[]> {
             ...chunk,
             embedding
           });
-          updatedCache = true;
         } else {
           throw new Error('No embedding returned from API');
         }
@@ -207,21 +208,6 @@ export async function initVectorDb(): Promise<EmbeddedChunk[]> {
           embedding: new Array(768).fill(0)
         });
       }
-    }
-  }
-
-  // Save the updated cache back to disk if new embeddings were created
-  if (updatedCache) {
-    try {
-      // Ensure the directory exists
-      const dir = path.dirname(CACHE_PATH);
-      if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
-      }
-      fs.writeFileSync(CACHE_PATH, JSON.stringify(cache, null, 2), 'utf8');
-      console.log('Saved updated embeddings cache.');
-    } catch (e) {
-      console.error('Failed to write embeddings cache to disk:', e);
     }
   }
 
