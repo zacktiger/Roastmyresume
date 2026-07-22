@@ -192,7 +192,7 @@ export default function ResumeUploader() {
         </div>
         <h3 className={styles.title}>Roast My Custom Resume</h3>
         <p className={styles.subtitle}>
-          Upload your PDF or TXT resume to see how a cynical tech recruiter would tear it apart. No details saved, completely stateless.
+          Upload your PDF or TXT resume to see how a cynical tech recruiter would tear it apart. Nothing is stored on our servers — your file is sent to Google Gemini to generate the roast and is not retained.
         </p>
       </div>
 

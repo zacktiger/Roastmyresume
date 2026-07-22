@@ -6,12 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "generate-embeddings": "node scripts/generate-embeddings.mjs"
+    "lint": "eslint"
   },
   "dependencies": {
     "@google/genai": "^2.10.0",
-    "cmdk": "^1.1.1",
     "framer-motion": "^12.42.2",
     "lucide-react": "^1.23.0",
     "next": "16.2.10",

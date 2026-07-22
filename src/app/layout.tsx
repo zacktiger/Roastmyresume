@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ask My Resume — Kshitij's AI Portfolio",
-  description: "An interactive, AI-powered resume interface. Chat with Kshitij's background, search builds via ⌘K, and check live GitHub activity.",
+  title: "Roast My Resume — Brutally Honest AI Resume Feedback",
+  description: "Grade a single resume bullet point in seconds, or upload your whole resume and let a cynical AI tech recruiter tear it apart — then tell you exactly how to fix it.",
 };
 
 export default function RootLayout({

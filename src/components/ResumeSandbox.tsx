@@ -28,7 +28,7 @@ const TEMPLATE_BULLETS = [
     description: 'Action-oriented, describes project scope but lacks metrics.'
   },
   {
-    label: '🔥 Elite (Kshitij\'s Bullet)',
+    label: '🔥 Elite (Metrics + Impact)',
     text: 'Implemented real-time features using Server-Sent Events (SSE) and WebSockets, reducing UI latency by 35%.',
     description: 'Perfect combination of active verbs, specific technology, and quantitative impact.'
   }
