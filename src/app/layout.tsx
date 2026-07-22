@@ -12,7 +12,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "Roast My Resume — Brutally Honest AI Resume Feedback",
   description: "Grade a single resume bullet point in seconds, or upload your whole resume and let a cynical AI tech recruiter tear it apart — then tell you exactly how to fix it.",
 };

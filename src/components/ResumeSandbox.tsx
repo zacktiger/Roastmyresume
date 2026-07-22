@@ -2,8 +2,10 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Flame, Edit3, RefreshCw, Send, CheckSquare, Award } from 'lucide-react';
+import { Flame, Edit3, RefreshCw, Send, CheckSquare, Award, Share2, Check } from 'lucide-react';
 import styles from './ResumeSandbox.module.css';
+import { getScoreTheme } from '@/lib/score';
+import { encodeRoast } from '@/lib/share';
 
 interface EvaluationResult {
   score: number;
@@ -37,13 +39,53 @@ const TEMPLATE_BULLETS = [
 export default function ResumeSandbox() {
   const [inputText, setInputText] = useState(TEMPLATE_BULLETS[0].text);
   const [result, setResult] = useState<EvaluationResult | null>(null);
+  // The exact bullet that produced `result` — the textarea may be edited after
+  // grading, so the share link must snapshot what was actually scored.
+  const [gradedBullet, setGradedBullet] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const handleSelectTemplate = (text: string) => {
     setInputText(text);
     setResult(null);
     setError(null);
+    setCopied(false);
+  };
+
+  const handleShare = async () => {
+    if (!result) return;
+    const encoded = encodeRoast({
+      bullet: gradedBullet,
+      score: result.score,
+      comment: result.recruiterComment,
+      improvements: result.improvements,
+    });
+    const url = `${window.location.origin}/share?s=${encoded}`;
+    const theme = getScoreTheme(result.score);
+
+    // Native share sheet on mobile; fall back to copying the link everywhere else.
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({
+          title: 'My resume bullet got roasted',
+          text: `I scored ${result.score}/100 — ${theme.label}. Can you beat it?`,
+          url,
+        });
+        return;
+      } catch {
+        // User dismissed the sheet or it is unavailable — fall through to copy.
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Could not copy share link:', err);
+      setError('Could not copy the share link. Please try again.');
+    }
   };
 
   const handleEvaluate = async () => {
@@ -68,6 +110,8 @@ export default function ResumeSandbox() {
       }
 
       setResult(data);
+      setGradedBullet(inputText.trim());
+      setCopied(false);
     } catch (err) {
       console.error('Error evaluating bullet:', err);
       setError(err instanceof Error ? err.message : 'Failed to communicate with evaluator.');
@@ -76,15 +120,9 @@ export default function ResumeSandbox() {
     }
   };
 
-  // Helper to color code the score
-  const getScoreTheme = (score: number) => {
-    if (score < 40) return { color: '#f43f5e', text: 'Recruiter Reject', class: styles.reject };
-    if (score < 70) return { color: '#fb923c', text: 'Meh / Forgotten', class: styles.meh };
-    if (score < 85) return { color: '#38bdf8', text: 'Interview Worthy', class: styles.good };
-    return { color: '#34d399', text: 'Instant Hire!', class: styles.elite };
-  };
-
-  const scoreTheme = result ? getScoreTheme(result.score) : { color: '#626f7a', text: 'Unevaluated', class: '' };
+  const scoreTheme = result
+    ? getScoreTheme(result.score)
+    : { key: '' as const, color: '#626f7a', label: 'Unevaluated' };
 
   // Calculate SVG circular progress properties
   const radius = 50;
@@ -232,8 +270,8 @@ export default function ResumeSandbox() {
                   </div>
                 </div>
 
-                <div className={`${styles.scoreBanner} ${scoreTheme.class}`}>
-                  <span>{scoreTheme.text}</span>
+                <div className={`${styles.scoreBanner} ${scoreTheme.key ? styles[scoreTheme.key] : ''}`}>
+                  <span>{scoreTheme.label}</span>
                 </div>
 
                 {/* Recruiter Critique */}
@@ -261,6 +299,23 @@ export default function ResumeSandbox() {
                     </ul>
                   </div>
                 )}
+
+                <button
+                  className={`${styles.shareButton} ${copied ? styles.shareButtonCopied : ''}`}
+                  onClick={handleShare}
+                >
+                  {copied ? (
+                    <>
+                      <Check size={14} />
+                      <span>Link copied — go humble a friend</span>
+                    </>
+                  ) : (
+                    <>
+                      <Share2 size={14} />
+                      <span>Share this score</span>
+                    </>
+                  )}
+                </button>
               </motion.div>
             )}
           </AnimatePresence>
